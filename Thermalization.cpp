@@ -25,11 +25,16 @@ Spins initialize_spins(int N, double theta, double noise_amp, std::mt19937 &rng)
     const double delta_ini = 0.1;
     Spins spins(N);
     std::uniform_real_distribution<double> dist(0.0, 1.0);
+    // Distribution for noise in the range [-pi/100, +pi/100]
+    std::uniform_real_distribution<double> noise_dist(-M_PI/100, M_PI/100);
 
     for (int j = 0; j < N; j++)
     {
         // Random azimuthal angle in [0, 2pi)
         double theta_random = 2 * M_PI * dist(rng);
+        // Add noise between -pi/100 and +pi/100
+        theta_random += noise_dist(rng);
+
         // Random amplitude for the in-plane component (scaled by delta_ini)
         double r_random = delta_ini * dist(rng);
         double Sx = r_random * std::cos(theta_random);
@@ -43,6 +48,7 @@ Spins initialize_spins(int N, double theta, double noise_amp, std::mt19937 &rng)
     }
     return spins;
 }
+
 
 // -------------------------------------------------------------------------
 // Function: compute_H_ave
